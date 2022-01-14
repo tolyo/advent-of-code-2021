@@ -1,13 +1,9 @@
 defmodule SonarSweep do
-  def parse(source) do
-    source
-    |> File.open!()
-    |> IO.stream(:line)
-    |> Enum.into([])
-  end
 
+  @spec process(any) :: non_neg_integer
   def process(data) do
     data
+    |> Helper.parse()
     |> Enum.reverse()
     |> Enum.map(&(String.replace(&1, "\n", "")))
     |> Enum.map(fn x ->
@@ -18,7 +14,7 @@ defmodule SonarSweep do
     |> Enum.count(fn x -> x == true end)
   end
 
-  defp helper([t]), do: []
+  defp helper([_t]), do: []
   defp helper([h|t]) do
     case t do
       [] -> []

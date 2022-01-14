@@ -1,4 +1,4 @@
-defmodule SonarSweep.MixProject do
+defmodule AdventOfCode.MixProject do
   use Mix.Project
 
   def project do
