@@ -1,16 +1,18 @@
 defmodule GiantSquid do
-
   def process(data) do
     parsed = data |> Helper.parse()
     # the first line is our input
-    inputs = parsed
+    inputs =
+      parsed
       |> List.first()
       |> String.replace("\n", "")
       |> String.split(",")
 
     # boards
-    [_h|t] = parsed
-    boards = t
+    [_h | t] = parsed
+
+    boards =
+      t
       |> Enum.filter(fn x -> x !== "\n" end)
       |> Enum.map(&String.replace(&1, "\n", ""))
       |> Enum.map(&String.trim/1)
@@ -18,14 +20,11 @@ defmodule GiantSquid do
       |> Enum.map(&String.split(&1, " "))
       |> Enum.chunk_every(5)
 
-
     # feed the input into every board until on one column is completely filled
-    # each matched inout is replaced by a tuple {:ok, val}
     match(inputs, boards)
   end
 
-  def match([h|t], list) do
-
+  def match([h | t], list) do
     list
     |> Enum.map(fn board ->
       board
@@ -46,8 +45,28 @@ defmodule GiantSquid do
         board ->
           # if any one of the rows is a tuple, we are donw
           case Enum.any?(board, fn x -> is_tuple(x) end) do
-            true -> {:done, get_sum(board)}
-            false -> board
+            true ->
+              {:done, get_sum(board)}
+
+            false ->
+              # board
+              # check for columns
+              Enum.to_list(0..4)
+              |> Enum.map(fn index ->
+                board
+                |> Enum.map(fn row ->
+                  {val, _} = List.pop_at(row, index)
+                  val
+                end)
+                |> Enum.all?(fn x -> is_tuple(x) end)
+              end)
+              |> case do
+                val ->
+                  case Enum.any?(val, fn x -> x == true end) do
+                    true -> {:done, get_sum(board)}
+                    false -> board
+                  end
+              end
           end
       end
     end)
@@ -57,7 +76,9 @@ defmodule GiantSquid do
           true ->
             {a, _} = Integer.parse(h)
             Enum.filter(boards, &is_tuple(&1))[:done] * a
-          false -> match(t, boards)
+
+          false ->
+            match(t, boards)
         end
     end
   end
@@ -65,16 +86,16 @@ defmodule GiantSquid do
   def get_sum(board) do
     board
     # remove tuble
-    |> Enum.map(
-      fn x ->
-        case is_tuple(x) do
-          true ->
-            {:done, b} = x
-            b
-          false -> x
-        end
+    |> Enum.map(fn x ->
+      case is_tuple(x) do
+        true ->
+          {:done, b} = x
+          b
+
+        false ->
+          x
       end
-    )
+    end)
     # remove tuples from each row
     |> Enum.map(fn x ->
       Enum.filter(x, fn val -> is_tuple(val) == false end)

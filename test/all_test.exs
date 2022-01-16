@@ -1,9 +1,17 @@
 defmodule SonarSweepTest do
   use ExUnit.Case
 
-  test "GiantSquid" do
+  test "GiantSquid row" do
     res =
       "./lib/day4/test.txt"
+      |> GiantSquid.process()
+
+    assert res == 4512
+  end
+
+  test "GiantSquid colum" do
+    res =
+      "./lib/day4/test2.txt"
       |> GiantSquid.process()
 
     assert res == 4512
