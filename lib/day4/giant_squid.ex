@@ -54,7 +54,9 @@ defmodule GiantSquid do
     |> case do
       boards ->
         case Enum.any?(boards, fn x -> is_tuple(x) end) do
-          true -> {:done, boards}
+          true ->
+            {a, _} = Integer.parse(h)
+            Enum.filter(boards, &is_tuple(&1))[:done] * a
           false -> match(t, boards)
         end
     end
