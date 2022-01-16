@@ -1,6 +1,14 @@
 defmodule SonarSweepTest do
   use ExUnit.Case
 
+  test "GiantSquid 2" do
+    res =
+      "./lib/day4/test.txt"
+      |> GiantSquid2.process()
+
+    assert res == 1924
+  end
+
   test "GiantSquid row" do
     res =
       "./lib/day4/test.txt"
